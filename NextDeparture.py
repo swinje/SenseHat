@@ -23,7 +23,9 @@ while True:
 		content=conn.getresponse()
 		data=content.read()
 	except socket_error as serr: 
-		if serr.errno != 104:
+		# 101 remote host naughty
+		# 104 your router naughty
+		if serr.errno not in (101, 104):
 			raise serr
 		else:
 			# reconnect if connection is dropped
