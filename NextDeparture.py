@@ -2,6 +2,7 @@ import json, httplib, urllib, time, datetime, digit
 from sense_hat import SenseHat
 import errno
 from socket import error as socket_error
+from httplib import error as http_error
 
 sense = SenseHat()
 # Depends on which direction you place your Pi
@@ -20,6 +21,7 @@ while True:
 			Origin+"&toPlace="+
 			Destination+"&isafter=True&time="+
 			currenttime)
+		# This might throw an exception
 		content=conn.getresponse()
 		data=content.read()
 	except socket_error as serr: 
@@ -31,6 +33,8 @@ while True:
 			# reconnect if connection is dropped
 			conn.close(),
 			conn = httplib.HTTPConnection("reisapi.ruter.no")
+	except http_error as herr:
+		print(str(herr))
 	# Parse returned data into Dictionary object
 	jDict = json.loads(data)
 	er = jDict['ReisError']
